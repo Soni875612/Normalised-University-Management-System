@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}Reports - UMS{% endblock %}
+{% block page_title %}Reports & Analytics{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+
+    <!-- Department Stats -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header py-3">
+                <i class="fas fa-chart-bar me-2 text-primary"></i>Department-wise Student Count
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Department</th>
+                            <th>Code</th>
+                            <th>Active</th>
+                            <th>Graduated</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if dept_stats %}
+                            {% for d in dept_stats %}
+                            <tr>
+                                <td class="fw-medium small">{{ d.dept_name }}</td>
+                                <td><code class="small">{{ d.dept_code }}</code></td>
+                                <td><span class="badge bg-success">{{ d.active if d.active else 0 }}</span></td>
+                                <td><span class="badge bg-info">{{ d.graduated if d.graduated else 0 }}</span></td>
+                                <td><strong>{{ (d.active if d.active else 0) + (d.graduated if d.graduated else 0) }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-3">Koi data nahi mila</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Performers -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header py-3">
+                <i class="fas fa-trophy me-2 text-warning"></i>Top 10 Performers (CGPA)
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Student</th>
+                            <th>Department</th>
+                            <th>CGPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if top_students %}
+                            {% for s in top_students %}
+                            <tr>
+                                <td>
+                                    {% if loop.index == 1 %}
+                                        <span class="fw-bold fs-5">🥇</span>
+                                    {% elif loop.index == 2 %}
+                                        <span class="fw-bold fs-5">🥈</span>
+                                    {% elif loop.index == 3 %}
+                                        <span class="fw-bold fs-5">🥉</span>
+                                    {% else %}
+                                        <span class="text-muted fw-semibold">{{ loop.index }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="small fw-medium">{{ s.name }}</div>
+                                    <div class="text-muted" style="font-size:11px;">{{ s.enrollment_no }}</div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-dept small">{{ s.dept_name }}</span>
+                                </td>
+                                <td>
+                                    {% if s.cgpa >= 8 %}
+                                        <span class="fw-bold text-success">{{ s.cgpa }}</span>
+                                        <div class="progress mt-1" style="height:4px;">
+                                            <div class="progress-bar bg-success" style="width:{{ ((s.cgpa / 10) * 100)|round }}%;"></div>
+                                        </div>
+                                    {% elif s.cgpa >= 6 %}
+                                        <span class="fw-bold text-primary">{{ s.cgpa }}</span>
+                                        <div class="progress mt-1" style="height:4px;">
+                                            <div class="progress-bar bg-primary" style="width:{{ ((s.cgpa / 10) * 100)|round }}%;"></div>
+                                        </div>
+                                    {% else %}
+                                        <span class="fw-bold text-warning">{{ s.cgpa }}</span>
+                                        <div class="progress mt-1" style="height:4px;">
+                                            <div class="progress-bar bg-warning" style="width:{{ ((s.cgpa / 10) * 100)|round }}%;"></div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="fas fa-info-circle me-1"></i> Abhi koi grade data nahi hai
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grade Scale Reference -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header py-3">
+                <i class="fas fa-chart-pie me-2 text-info"></i>University Grading Scale
+            </div>
+            <div class="card-body">
+                <div class="row g-2 text-center">
+
+                    <div class="col">
+                        <div class="p-3 rounded" style="background:#4caf5022; border:2px solid #4caf50;">
+                            <div class="fw-bold fs-4" style="color:#4caf50;">O</div>
+                            <small class="text-muted d-block">90 - 100</small>
+                            <small class="text-muted">GP: 10</small>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="p-3 rounded" style="background:#66bb6a22; border:2px solid #66bb6a;">
+                            <div class="fw-bold fs-4" style="color:#66bb6a;">A+</div>
+                            <small class="text-muted d-block">80 - 89</small>
+                            <small class="text-muted">GP: 9</small>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="p-3 rounded" style="background:#42a5f522; border:2px solid #42a5f5;">
+                            <div class="fw-bold fs-4" style="color:#42a5f5;">A</div>
+                            <small class="text-muted d-block">70 - 79</small>
+                            <small class="text-muted">GP: 8</small>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="p-3 rounded" style="background:#26c6da22; border:2px solid #26c6da;">
+                            <div class="fw-bold fs-4" style="color:#26c6da;">B+</div>
+                            <small class="text-muted d-block">60 - 69</small>
+                            <small class="text-muted">GP: 7</small>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="p-3 rounded" style="background:#5c6bc022; border:2px solid #5c6bc0;">
+                            <div class="fw-bold fs-4" style="color:#5c6bc0;">B</div>
+                            <small class="text-muted d-block">50 - 59</small>
+                            <small class="text-muted">GP: 6</small>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="p-3 rounded" style="background:#ffa72622; border:2px solid #ffa726;">
+                            <div class="fw-bold fs-4" style="color:#ffa726;">C</div>
+                            <small class="text-muted d-block">40 - 49</small>
+                            <small class="text-muted">GP: 5</small>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="p-3 rounded" style="background:#ef535022; border:2px solid #ef5350;">
+                            <div class="fw-bold fs-4" style="color:#ef5350;">F</div>
+                            <small class="text-muted d-block">0 - 39</small>
+                            <small class="text-muted">GP: 0</small>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

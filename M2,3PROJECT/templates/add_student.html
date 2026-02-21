@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Add Student - UMS{% endblock %}
+{% block page_title %}Add New Student{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card">
+            <div class="card-header py-3">
+                <i class="fas fa-user-plus me-2 text-primary"></i>
+                Student Registration Form
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <h6 class="text-primary mb-3"><i class="fas fa-info-circle me-1"></i> Personal Information</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">First Name *</label>
+                            <input type="text" name="first_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Last Name *</label>
+                            <input type="text" name="last_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Gender</label>
+                            <select name="gender" class="form-select">
+                                <option value="">Select</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Email *</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Phone</label>
+                            <input type="text" name="phone" class="form-control" maxlength="10">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Date of Birth</label>
+                            <input type="date" name="dob" class="form-control">
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary mb-3"><i class="fas fa-graduation-cap me-1"></i> Academic Information</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Department *</label>
+                            <select name="dept_id" class="form-select" required>
+                                <option value="">Select Department</option>
+                                {% for d in departments %}
+                                <option value="{{ d.dept_id }}">{{ d.dept_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Current Semester *</label>
+                            <select name="semester" class="form-select" required>
+                                {% for i in range(1, 9) %}
+                                <option value="{{ i }}">Semester {{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Admission Year *</label>
+                            <input type="number" name="admission_year" class="form-control"
+                                   value="{{ current_year }}" min="2000" max="{{ current_year }}" required>
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary mb-3"><i class="fas fa-map-marker-alt me-1"></i> Address (1NF - Separate Table)</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Street</label>
+                            <input type="text" name="street" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold">City</label>
+                            <input type="text" name="city" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold">State</label>
+                            <input type="text" name="state" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold">PIN Code</label>
+                            <input type="text" name="pincode" class="form-control" maxlength="6">
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-save me-2"></i>Save Student
+                        </button>
+                        <a href="{{ url_for('students') }}" class="btn btn-outline-secondary px-4">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

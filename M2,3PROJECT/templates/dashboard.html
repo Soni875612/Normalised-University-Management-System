@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - UMS{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+
+<!-- STAT CARDS -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="text-muted small mb-1">Active Students</p>
+                    <h3 class="fw-bold mb-0">{{ stats.students }}</h3>
+                </div>
+                <div class="stat-icon" style="background:#e3f2fd;">
+                    <i class="fas fa-user-graduate" style="color:#1565c0;"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('students') }}" class="text-decoration-none">
+                <small class="text-primary">View all <i class="fas fa-arrow-right"></i></small>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="text-muted small mb-1">Faculty Members</p>
+                    <h3 class="fw-bold mb-0">{{ stats.faculty }}</h3>
+                </div>
+                <div class="stat-icon" style="background:#f3e5f5;">
+                    <i class="fas fa-chalkboard-teacher" style="color:#7b1fa2;"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('faculty_list') }}" class="text-decoration-none">
+                <small class="text-primary">View all <i class="fas fa-arrow-right"></i></small>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="text-muted small mb-1">Departments</p>
+                    <h3 class="fw-bold mb-0">{{ stats.departments }}</h3>
+                </div>
+                <div class="stat-icon" style="background:#e8f5e9;">
+                    <i class="fas fa-building" style="color:#2e7d32;"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('departments') }}" class="text-decoration-none">
+                <small class="text-primary">View all <i class="fas fa-arrow-right"></i></small>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="text-muted small mb-1">Courses</p>
+                    <h3 class="fw-bold mb-0">{{ stats.courses }}</h3>
+                </div>
+                <div class="stat-icon" style="background:#fff3e0;">
+                    <i class="fas fa-book" style="color:#e65100;"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('courses') }}" class="text-decoration-none">
+                <small class="text-primary">View all <i class="fas fa-arrow-right"></i></small>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Recent Students -->
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center py-3">
+                <span><i class="fas fa-user-graduate me-2 text-primary"></i>Recently Added Students</span>
+                <a href="{{ url_for('add_student') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus me-1"></i>Add Student
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Name</th><th>Department</th><th>Added On</th></tr></thead>
+                    <tbody>
+                        {% for s in recent %}
+                        <tr>
+                            <td><i class="fas fa-user-circle text-muted me-2"></i>{{ s.name }}</td>
+                            <td><span class="badge badge-dept px-2 py-1">{{ s.dept_name }}</span></td>
+                            <td class="text-muted small">{{ s.created_at[:10] }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-center text-muted py-4">No students added yet</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header py-3">
+                <span><i class="fas fa-bolt me-2 text-warning"></i>Quick Actions</span>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('add_student') }}" class="btn btn-outline-primary text-start">
+                        <i class="fas fa-user-plus me-2"></i> Add New Student
+                    </a>
+                    <a href="{{ url_for('add_faculty') }}" class="btn btn-outline-purple text-start" style="border-color:#7b1fa2;color:#7b1fa2;">
+                        <i class="fas fa-chalkboard-teacher me-2"></i> Add Faculty Member
+                    </a>
+                    <a href="{{ url_for('add_course') }}" class="btn btn-outline-warning text-start">
+                        <i class="fas fa-book-medical me-2"></i> Add New Course
+                    </a>
+                    <a href="{{ url_for('enrollments') }}" class="btn btn-outline-success text-start">
+                        <i class="fas fa-clipboard-check me-2"></i> Enroll Student
+                    </a>
+                    <a href="{{ url_for('grades') }}" class="btn btn-outline-info text-start">
+                        <i class="fas fa-star-half-alt me-2"></i> Enter Grades
+                    </a>
+                    <a href="{{ url_for('reports') }}" class="btn btn-outline-dark text-start">
+                        <i class="fas fa-chart-pie me-2"></i> View Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

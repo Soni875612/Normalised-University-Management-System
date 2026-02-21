@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Grades - UMS{% endblock %}
+{% block page_title %}Grade Management{% endblock %}
+{% block content %}
+{% if session.role in ('admin', 'faculty') %}
+<div class="card mb-3">
+    <div class="card-header py-3"><i class="fas fa-star me-2 text-warning"></i>Enter Grade</div>
+    <div class="card-body">
+        <form method="POST" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold">Select Enrollment *</label>
+                <select name="enrollment_id" class="form-select" required>
+                    <option value="">-- Select Student/Course --</option>
+                    {% for e in enrollments %}
+                    <option value="{{ e.enrollment_id }}">{{ e.student_name }} - {{ e.course_name }} ({{ e.academic_year }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Marks (0-100) *</label>
+                <input type="number" name="marks" class="form-control" min="0" max="100" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold">Remarks</label>
+                <input type="text" name="remarks" class="form-control" placeholder="Optional remarks">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-warning w-100 fw-semibold">Save Grade</button>
+            </div>
+        </form>
+        <small class="text-muted mt-2 d-block">
+            <i class="fas fa-info-circle me-1"></i>Grade is auto-assigned: O(90+), A+(80+), A(70+), B+(60+), B(50+), C(40+), F(below 40)
+        </small>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header py-3"><i class="fas fa-table me-2 text-primary"></i>All Grades</div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr><th>#</th><th>Student</th><th>Course</th><th>Year</th><th>Marks</th><th>Grade</th><th>GP</th><th>Remarks</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for g in grades %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        <div class="small fw-medium">{{ g.student_name }}</div>
+                        <div class="text-muted" style="font-size:11px">{{ g.enrollment_no }}</div>
+                    </td>
+                    <td>
+                        <div class="small">{{ g.course_name }}</div>
+                        <code style="font-size:11px">{{ g.course_code }}</code>
+                    </td>
+                    <td class="text-muted small">{{ g.academic_year }}</td>
+                    <td><strong>{{ g.marks_obtained }}</strong>/100</td>
+                    <td>
+                        <span class="badge {% if g.grade in ['O','A+','A'] %}bg-success{% elif g.grade in ['B+','B'] %}bg-primary{% elif g.grade == 'C' %}bg-warning text-dark{% else %}bg-danger{% endif %} px-2">
+                            {{ g.grade }}
+                        </span>
+                    </td>
+                    <td>{{ g.grade_point }}</td>
+                    <td class="text-muted small">{{ g.remarks or '-' }}</td>
+                    <td>
+                        {% if session.role in ('admin', 'faculty') %}
+                        <a href="{{ url_for('delete_grade', grade_id=g.grade_id) }}"
+                           class="btn btn-xs btn-outline-danger btn-sm"
+                           onclick="return confirm('Delete this grade?')" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="9" class="text-center text-muted py-4">No grades recorded yet</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

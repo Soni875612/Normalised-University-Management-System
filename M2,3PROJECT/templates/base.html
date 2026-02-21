@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}University Management System{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #283593;
+            --accent: #42a5f5;
+            --sidebar-width: 250px;
+        }
+        body { background: #f5f7fb; font-family: 'Segoe UI', sans-serif; }
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .sidebar-brand {
+            padding: 20px 16px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+        .sidebar-brand h5 { color: white; font-weight: 700; font-size: 14px; margin: 0; }
+        .sidebar-brand small { color: rgba(255,255,255,.6); font-size: 11px; }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,.75);
+            padding: 10px 20px;
+            font-size: 14px;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid transparent;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,.1);
+            border-left: 3px solid var(--accent);
+        }
+        .sidebar .nav-section {
+            color: rgba(255,255,255,.4);
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 14px 20px 6px;
+            letter-spacing: 1px;
+        }
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+        .topbar {
+            background: white;
+            padding: 12px 24px;
+            border-bottom: 1px solid #e8ecf0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,.04);
+        }
+        .page-content { padding: 24px; }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.06);
+            transition: transform .2s;
+        }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-icon {
+            width: 48px; height: 48px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+        }
+        .btn-primary { background: var(--primary); border-color: var(--primary); }
+        .btn-primary:hover { background: var(--secondary); border-color: var(--secondary); }
+        .table th { background: #f8f9ff; color: #444; font-weight: 600; font-size: 13px; }
+        .table td { font-size: 14px; vertical-align: middle; }
+        .badge-dept { background: #e8eaf6; color: var(--primary); font-weight: 500; }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 .2rem rgba(66,165,245,.25);
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+{% if session.get('user_id') %}
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="d-flex align-items-center gap-2">
+            <i class="fas fa-university text-info fs-4"></i>
+            <div>
+                <h5>UMS Portal</h5>
+                <small>University Management</small>
+            </div>
+        </div>
+    </div>
+    <nav class="mt-2">
+        <div class="nav-section">Main</div>
+        <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+
+        <div class="nav-section">Academic</div>
+        <a href="{{ url_for('departments') }}" class="nav-link {% if 'department' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-building"></i> Departments
+        </a>
+        <a href="{{ url_for('courses') }}" class="nav-link {% if 'course' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-book"></i> Courses
+        </a>
+        <a href="{{ url_for('faculty_list') }}" class="nav-link {% if 'faculty' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-chalkboard-teacher"></i> Faculty
+        </a>
+
+        <div class="nav-section">Students</div>
+        <a href="{{ url_for('students') }}" class="nav-link {% if request.endpoint == 'students' %}active{% endif %}">
+            <i class="fas fa-user-graduate"></i> Students
+        </a>
+        <a href="{{ url_for('enrollments') }}" class="nav-link {% if 'enrollment' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-clipboard-list"></i> Enrollments
+        </a>
+        <a href="{{ url_for('grades') }}" class="nav-link {% if 'grade' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-star"></i> Grades
+        </a>
+
+        <div class="nav-section">Reports</div>
+        <a href="{{ url_for('reports') }}" class="nav-link {% if 'report' in request.endpoint %}active{% endif %}">
+            <i class="fas fa-chart-bar"></i> Reports
+        </a>
+    </nav>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="topbar">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-sm btn-outline-secondary d-md-none"
+                    onclick="document.getElementById('sidebar').classList.toggle('show')">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h6 class="mb-0 fw-semibold text-muted">{% block page_title %}{% endblock %}</h6>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-primary">{{ session.get('role', '') | upper }}</span>
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-user-circle text-secondary fs-5"></i>
+                <span class="fw-medium" style="font-size:14px;">{{ session.get('username', '') }}</span>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-danger">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="page-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for cat, msg in messages %}
+                <div class="alert alert-{{ cat }} alert-dismissible fade show" role="alert">
+                    {{ msg }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+{% else %}
+
+{% block auth_content %}{% endblock %}
+
+{% endif %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

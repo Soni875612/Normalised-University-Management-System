@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Students - UMS{% endblock %}
+{% block page_title %}Students{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center py-3">
+        <span><i class="fas fa-user-graduate me-2 text-primary"></i>All Students</span>
+        <a href="{{ url_for('add_student') }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i> Add Student
+        </a>
+    </div>
+    <div class="card-body">
+        <!-- Search/Filter -->
+        <form method="GET" class="row g-2 mb-3">
+            <div class="col-md-5">
+                <input type="text" name="search" value="{{ search }}" class="form-control form-control-sm"
+                       placeholder="Search by name, enrollment no, email...">
+            </div>
+            <div class="col-md-3">
+                <select name="dept_id" class="form-select form-select-sm">
+                    <option value="">All Departments</option>
+                    {% for d in departments %}
+                    <option value="{{ d.dept_id }}" {% if dept_id|string == d.dept_id|string %}selected{% endif %}>
+                        {{ d.dept_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100">
+                    <i class="fas fa-search me-1"></i>Search
+                </button>
+            </div>
+            <div class="col-md-2">
+                <a href="{{ url_for('students') }}" class="btn btn-outline-secondary btn-sm w-100">Reset</a>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Enrollment No</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Semester</th>
+                        <th>Email</th>
+                        <th>City</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in students %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td><code class="text-primary">{{ s.enrollment_no }}</code></td>
+                        <td class="fw-medium">{{ s.first_name }} {{ s.last_name }}</td>
+                        <td><span class="badge badge-dept">{{ s.dept_name }}</span></td>
+                        <td>Sem {{ s.semester }}</td>
+                        <td class="text-muted small">{{ s.email }}</td>
+                        <td class="text-muted small">{{ s.city or '-' }}</td>
+                        <td>
+                            <span class="badge {% if s.status=='Active' %}bg-success{% elif s.status=='Graduated' %}bg-info{% else %}bg-secondary{% endif %}">
+                                {{ s.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('view_student', student_id=s.student_id) }}"
+                               class="btn btn-xs btn-outline-primary btn-sm" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if session.role == 'admin' %}
+                            <a href="{{ url_for('delete_student', student_id=s.student_id) }}"
+                               class="btn btn-xs btn-outline-danger btn-sm ms-1"
+                               onclick="return confirm('Delete this student?')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-5">
+                            <i class="fas fa-user-slash fa-2x mb-2 d-block"></i>
+                            No students found. <a href="{{ url_for('add_student') }}">Add one now</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <small class="text-muted">Total: <strong>{{ students|length }}</strong> students</small>
+    </div>
+</div>
+{% endblock %}

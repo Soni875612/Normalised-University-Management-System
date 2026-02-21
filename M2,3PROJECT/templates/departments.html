@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Departments - UMS{% endblock %}
+{% block page_title %}Departments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <span class="text-muted small">{{ departments|length }} departments</span>
+    {% if session.role == 'admin' %}
+    <a href="{{ url_for('add_department') }}" class="btn btn-primary btn-sm">
+        <i class="fas fa-plus me-1"></i>Add Department
+    </a>
+    {% endif %}
+</div>
+<div class="row g-3">
+    {% for d in departments %}
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="stat-icon" style="background:#e8eaf6; min-width:42px; height:42px;">
+                        <i class="fas fa-building" style="color:#1a237e;"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">{{ d.dept_name }}</h6>
+                        <code class="small text-muted">{{ d.dept_code }}</code>
+                    </div>
+                </div>
+                <p class="text-muted small mb-1"><i class="fas fa-user-tie me-1"></i>{{ d.hod_name or 'Not assigned' }}</p>
+                <p class="text-muted small mb-0"><i class="fas fa-users me-1"></i>{{ d.student_count }} students</p>
+            </div>
+            {% if session.role == 'admin' %}
+            <div class="card-footer bg-transparent border-top-0 pt-0">
+                <a href="{{ url_for('delete_department', dept_id=d.dept_id) }}"
+                   class="btn btn-outline-danger btn-sm"
+                   onclick="return confirm('Delete this department?')">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center text-muted py-5">No departments added yet.</div>
+    {% endfor %}
+</div>
+{% endblock %}
