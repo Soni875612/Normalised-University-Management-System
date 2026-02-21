@@ -96,6 +96,7 @@ http://127.0.0.1:5000
 - Faculty: `faculty1` / `faculty123`
 
 ## 📸 Screenshots
+<img width="1913" height="911" alt="Screenshot 2026-02-21 220814" src="https://github.com/user-attachments/assets/086f290a-e1dd-4ba0-aa68-53ca98fe4544" />
 
 <img width="1917" height="915" alt="image" src="https://github.com/user-attachments/assets/6d9f4667-17e2-4ba4-bd97-16b849678521" />
 
